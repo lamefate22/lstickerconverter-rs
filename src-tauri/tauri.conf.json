@@ -1,0 +1,29 @@
+{
+  "productName": "LStickerConverter",
+  "version": "1.1.0",
+  "identifier": "com.lamefate22.lstickerconverter-rs",
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": ["icons/icon.ico"]
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "LStickerConverter",
+        "width": 700,
+        "height": 500
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "build": {
+    "beforeDevCommand": "",
+    "beforeBuildCommand": "",
+    "devUrl": null,
+    "frontendDist": "../ui"
+  }
+}

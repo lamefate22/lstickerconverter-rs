@@ -1,46 +1,62 @@
 # 🖼️ LStickerConverter-rs
 
-A high-performance CLI tool written in **Rust** to convert and resize images into the Telegram sticker format (512px PNG). 🚀
+A high-performance, modern GUI tool written in **Rust** and **Tauri v2** to convert and resize images into the Telegram sticker format (512px PNG). 🚀
 
 ## ✨ Features
 
-- **⚡ Fast:** Utilizes parallel processing (via `rayon`) to convert multiple images simultaneously.
 - **📏 Smart Resize:** Automatically scales images to 512px on the longest side while preserving aspect ratio.
-- **🖼️ Formats:** Supports `JPG`, `JPEG`, `PNG`, `WEBP`, and `BMP`.
-- **⌨️ Interactive Mode:** Simply run the app without arguments to be prompted for paths.
+- **⚡ Blazing Fast:** Utilizes parallel processing to convert dozens of images simultaneously.
+- **🎨 Modern UI:** Minimalist, dark-themed interface with real-time progress updates.
+- **🖼️ Wide Format Support:** Works with `JPG`, `JPEG`, `PNG`, `WEBP`, and `BMP`.
+- **💻 Cross-Platform:** Built to run smoothly on Windows and Linux.
 
 ## 📥 Installation
 
 ### 📦 Download Binaries
-You can download the pre-compiled executable for your platform from the [Releases](https://github.com/lamefate22/LStickerConverter-rs/releases) page.
+You can download the pre-compiled executable for your platform from the [Releases](https://github.com/lamefate22/lstickerconverter-rs/releases) page.
 
 ### 🛠️ Build from Source
-If you have [Rust and Cargo](https://rustup.rs/) installed:
+Ensure you have [Rust](https://rustup.rs/) and [Tauri dependencies](https://v2.tauri.app/start/prerequisites/) installed.
 
+#### 1. Clone the repository
 ```bash
-git clone https://github.com/lamefate22/LStickerConverter-rs.git
+git clone https://github.com/lamefate22/lstickerconverter-rs.git
 cd lstickerconverter-rs
-cargo build --release
 ```
 
-The executable will be located at `target/release/lstickerconverter-rs`.
+#### 2. Linux Dependencies (Ubuntu/Debian)
+```bash
+sudo apt update
+sudo apt install libwebkit2gtk-4.1-dev \
+  build-essential \
+  curl \
+  wget \
+  file \
+  libxdo-dev \
+  libssl-dev \
+  libayatana-appindicator3-dev \
+  librsvg2-dev
+```
+
+#### 3. Compile
+```bash
+cd src-tauri
+cargo build --release
+```
+The executable will be located in `src-tauri/target/release/`.
 
 ## 🚀 Usage
 
-```bash
-# 📁 Basic usage
-lstickerconverter-rs --path "C:/Path/To/Images"
-
-# 🛠️ Convert without resizing
-lstickerconverter-rs --path "C:/Path/To/Images" --no-resize
-```
+1. Launch the application.
+2. Toggle the **Resize** option if needed.
+3. Click **Choose Folder** and select the directory containing your images.
+4. The tool will automatically create a `Converted` subfolder with your Telegram-ready PNGs.
 
 ## ⚙️ How it works
 
-1. **🔍 Scan:** Looks for supported image formats in the provided directory.
-2. **📁 Create:** Generates a `Converted` subdirectory.
-3. **🎨 Process:** Resizes and converts images to PNG.
-4. **💾 Save:** Stores results in the `Converted` folder.
+1. **Backend:** Scans the directory, manages the file system, and performs parallel image processing.
+2. **Frontend:** A lightweight HTML/CSS/JS interface communicates with Rust via Tauri commands.
+3. **Events:** Rust sends real-time progress events back to the UI to keep you informed.
 
 ## 📜 License
 

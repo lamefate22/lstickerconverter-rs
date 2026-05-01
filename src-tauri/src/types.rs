@@ -1,19 +1,4 @@
 use thiserror::Error;
-use clap::Parser;
-use std::path::PathBuf;
-
-#[derive(Parser)]
-#[command(version)]
-#[command(name = "LStickerConverter-rs")]
-#[command(about = "Converts photos to fit the Telegram sticker format.", long_about = None)]
-pub struct Args {
-    /// The path to the photo folder
-    #[arg(short, long)]
-    pub path: PathBuf,
-    /// Flag: Do not resize the photo
-    #[arg(short, long, default_value_t = false)]
-    pub no_resize: bool
-}
 
 #[derive(Error, Debug)]
 pub enum ApplicationErrors {

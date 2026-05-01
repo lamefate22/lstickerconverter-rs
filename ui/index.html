@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>LStickerConverter</title>
+        <style>
+            :root {
+                --bg: #0f1114;
+                --primary: #00a2ed;
+                --primary-hover: #00b4ff;
+                --text: #f5f5f7;
+                --text-dim: #86868b;
+                --error: #ff453a;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                font-family: -apple-system, system-ui, sans-serif;
+                background: var(--bg);
+                color: var(--text);
+                margin: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                overflow: hidden;
+            }
+            .app-container {
+                background: transparent;
+                padding: 40px 32px;
+                width: 100%;
+                max-width: 360px;
+                text-align: center;
+                position: relative;
+            }
+
+            .logo-area {
+                margin-bottom: 32px;
+            }
+
+            .logo-icon {
+                font-size: 32px;
+                margin-bottom: 8px;
+                display: inline-block;
+            }
+
+            h1 {
+                font-size: 22px;
+                font-weight: 600;
+                letter-spacing: -0.022em;
+                color: var(--primary);
+                margin: 0 0 2px 0;
+            }
+
+            .description {
+                color: var(--text-dim);
+                font-size: 14px;
+                line-height: 1.4;
+                margin: 0 0 0 0;
+            }
+
+            .settings-panel {
+                background: rgba(255, 255, 255, 0.03);
+                border-radius: 16px;
+                padding: 14px 18px;
+                margin-bottom: 24px;
+            }
+            .setting-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                font-size: 14px;
+            }
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 44px;
+                height: 24px;
+            }
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background-color: #3a3a3c;
+                transition: 0.3s;
+                border-radius: 24px;
+            }
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 18px;
+                width: 18px;
+                left: 3px; bottom: 3px;
+                background-color: white;
+                transition: 0.3s;
+                border-radius: 50%;
+            }
+            input:checked + .slider {
+                background-color: var(--primary);
+            }
+            input:checked + .slider:before {
+                transform: translateX(20px);
+            }
+            .action-button {
+                background: var(--primary);
+                color: white;
+                border: none;
+                width: 100%;
+                padding: 18px;
+                border-radius: 18px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .action-button:hover {
+                background: var(--primary-hover);
+                transform: scale(1.02);
+            }
+            .action-button:active {
+                transform: scale(0.98);
+            }
+            .action-button:disabled {
+                background: #2c2c2e;
+                color: #48484a;
+                cursor: not-allowed;
+                transform: none;
+            }
+            .progress-container {
+                margin-top: 24px;
+                height: 0;
+                overflow: hidden;
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                opacity: 0;
+            }
+            .progress-container.visible {
+                height: 60px;
+                opacity: 1;
+            }
+            .progress-track {
+                height: 4px;
+                background: #2c2c2e;
+                border-radius: 2px;
+                margin-bottom: 12px;
+                overflow: hidden;
+            }
+            .progress-fill {
+                height: 100%;
+                background: var(--primary);
+                width: 0%;
+                transition: width 0.3s ease;
+                box-shadow: 0 0 10px var(--primary);
+            }
+            .progress-labels {
+                display: flex;
+                justify-content: space-between;
+                font-size: 12px;
+                color: var(--text-dim);
+            }
+            #current-filename {
+                max-width: 70%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            #toast {
+                position: absolute;
+                bottom: 24px;
+                left: 50%;
+                transform: translateX(-50%) translateY(100px);
+                background: rgba(255, 255, 255, 0.95);
+                color: #000;
+                padding: 12px 20px;
+                border-radius: 40px;
+                font-size: 13px;
+                font-weight: 600;
+                white-space: nowrap;
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+                z-index: 100;
+                visibility: hidden;
+                opacity: 0;
+            }
+            #toast.visible {
+                transform: translateX(-50%) translateY(0);
+                visibility: visible;
+                opacity: 1;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="app-container">
+            <div class="logo-area">
+                <span class="logo-icon">💎</span>
+                <h1>LStickerConverter</h1>
+                <p class="description">Images -> Stickers</p>
+            </div>
+
+            <div class="settings-panel">
+                <div class="setting-row">
+                    <span>Resize</span>
+                    <label class="switch">
+                        <input type="checkbox" id="resize-toggle" checked />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <button id="main-action" class="action-button">
+                Choose Folder
+            </button>
+
+            <div id="progress-ui" class="progress-container">
+                <div class="progress-track">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+                <div class="progress-labels">
+                    <span id="current-filename">Ready</span>
+                    <span id="progress-counter">0/0</span>
+                </div>
+            </div>
+
+            <div id="toast">Success!</div>
+        </div>
+
+        <script>
+            const { invoke } = window.__TAURI__.core;
+            const { open } = window.__TAURI__.dialog;
+            const { listen } = window.__TAURI__.event;
+
+            const mainBtn = document.getElementById("main-action");
+            const progressUi = document.getElementById("progress-ui");
+            const progressFill = document.getElementById("progress-fill");
+            const progressCounter = document.getElementById("progress-counter");
+            const filenameLabel = document.getElementById("current-filename");
+            const resizeToggle = document.getElementById("resize-toggle");
+            const toast = document.getElementById("toast");
+
+            function showToast(message, isError = false) {
+                toast.innerText = message;
+                toast.style.background = isError ? "#ff453a" : "rgba(255, 255, 255, 0.95)";
+                toast.style.color = isError ? "white" : "black";
+                toast.classList.add("visible");
+                setTimeout(() => toast.classList.remove("visible"), 3000);
+            }
+
+            listen("progress-update", (event) => {
+                const { current, total, filename } = event.payload;
+                const percent = (current / total) * 100;
+                progressFill.style.width = `${percent}%`;
+                progressCounter.innerText = `${current}/${total}`;
+                filenameLabel.innerText = filename;
+            });
+
+            mainBtn.addEventListener("click", async () => {
+                const selected = await open({
+                    directory: true, multiple: false, title: "Select Images Folder"
+                });
+
+                if (selected) {
+                    try {
+                        mainBtn.disabled = true;
+                        mainBtn.innerText = "Processing...";
+                        progressUi.classList.add("visible");
+                        progressFill.style.width = "0%";
+                        const result = await invoke("start_conversion", {
+                            path: selected, resize: resizeToggle.checked
+                        });
+                        filenameLabel.innerText = "Complete!";
+                        showToast(`Processed ${result.success_count} stickers`);
+                        setTimeout(() => {
+                            progressUi.classList.remove("visible");
+                            setTimeout(() => {
+                                filenameLabel.innerText = "Ready";
+                                progressFill.style.width = "0%";
+                                progressCounter.innerText = "0/0";
+                            }, 500);
+                        }, 3000);
+                    } catch (err) {
+                        showToast(err, true);
+                    } finally {
+                        mainBtn.disabled = false;
+                        mainBtn.innerText = "Choose Folder";
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
