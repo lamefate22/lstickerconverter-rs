@@ -1,14 +1,14 @@
 # LStickerConverter TODO
 
 ## 🏗 1. Architecture & Reliability
+- [ ] **State Persistence**:
+    - Integrate `tauri-plugin-store` to remember "Resize" toggle and "Output Format" settings across restarts.
 - [ ] **Advanced Error Handling**: 
     - Implement `serde::Serialize` for `ApplicationErrors` to pass structured error data to UI.
     - Add localized error messages.
 - [ ] **Logging & Debugging**:
     - Integrate `tauri-plugin-log` for file-based logging.
     - Log every failed file conversion with reasons.
-- [ ] **State Persistence**:
-    - Integrate `tauri-plugin-store` to remember "Resize" toggle and "Output Format" settings across restarts.
 - [ ] **Validation & Testing**:
     - Add unit tests for `filesystem.rs` and `converter.rs`.
     - Add integration tests for the conversion command.
