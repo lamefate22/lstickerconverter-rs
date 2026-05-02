@@ -1,4 +1,4 @@
-# 🖼️ LStickerConverter-rs
+# 🖼️ LStickerConverter
 
 A high-performance, modern GUI tool written in **Rust** and **Tauri v2** to convert and resize images into the Telegram sticker format (512px PNG). 🚀
 
